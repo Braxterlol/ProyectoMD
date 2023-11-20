@@ -3,8 +3,8 @@ const db = require('../configs/db.config');
 class DetallePedido {
     constructor({ DetallePedidoID, PedidoID, ProductoID, cantidad, precio_unitario, createdAt, updatedAt }) {
         this.DetallePedidoID = DetallePedidoID;
-        this.pedidoId = PedidoID;
-        this.productoId = ProductoID;
+        this.PedidoID = PedidoID;
+        this.ProductoID = ProductoID;
         this.cantidad = cantidad;
         this.precio_unitario = precio_unitario;
         this.createdAt = createdAt;
@@ -26,7 +26,15 @@ class DetallePedido {
         const [rows] = await connection.query(query);
         connection.end();
 
-        return rows;
+        return rows.map(row => new DetallePedido({
+            DetallePedidoID: row.DetallePedidoID,
+            PedidoID: row.PedidoID,
+            ProductoID: row.ProductoID,
+            cantidad: row.cantidad,
+            precio_unitario: row.precio_unitario,
+            createdAt: row.created_at,
+            updatedAt: row.updated_at
+        }));
     }
 
     static async getById(DetallePedidoID) {
@@ -36,7 +44,15 @@ class DetallePedido {
 
         if (rows.length > 0) {
             const row = rows[0];
-            return new DetallePedido({ DetallePedidoID: row.DetallePedidoID, PedidoID: row.PedidoID, ProductoID: row.ProductoID, cantidad: row.cantidad, precio_unitario: row.precio_unitario, createdAt: row.createdAt, updatedAt: row.updatedAt });
+            return new DetallePedido({
+                DetallePedidoID: row.DetallePedidoID,
+                PedidoID: row.PedidoID,
+                ProductoID: row.ProductoID,
+                cantidad: row.cantidad,
+                precio_unitario: row.precio_unitario,
+                createdAt: row.createdAt,
+                updatedAt: row.updatedAt
+            });
         }
 
         return null;
@@ -53,15 +69,12 @@ class DetallePedido {
 
         return;
     }
-    
+
     static async updateById(DetallePedidoID, { PedidoID, ProductoID, cantidad, precio_unitario }) {
         const connection = await db.createConnection();
 
         const updatedAt = new Date();
-        const [result] = await connection.execute(
-            "UPDATE detallepedido SET PedidoID = ?, ProductoID = ?, cantidad = ?, precio_unitario = ?, updated_at = ? WHERE DetallePedidoID = ?",
-            [PedidoID, ProductoID, cantidad, precio_unitario, updatedAt, DetallePedidoID]
-        );
+        const [result] = await connection.execute("UPDATE detallepedido SET PedidoID = ?, ProductoID = ?, cantidad = ?, precio_unitario = ?, updated_at = ? WHERE DetallePedidoID = ?", [PedidoID, ProductoID, cantidad, precio_unitario, updatedAt, DetallePedidoID]);
 
         connection.end();
 
@@ -76,17 +89,19 @@ class DetallePedido {
         const connection = await db.createConnection();
 
         const createdAt = new Date();
-
         const [result] = await connection.execute("INSERT INTO detallepedido (PedidoID, ProductoID, cantidad, precio_unitario, created_at) VALUES (?, ?, ?, ?, ?)", [this.PedidoID, this.ProductoID, this.cantidad, this.precio_unitario, createdAt]);
+
         connection.end();
 
         if (result.insertId === 0) {
             throw new Error("No se insertó el detalle del pedido");
         }
+
         this.DetallePedidoID = result.insertId;
         this.createdAt = createdAt;
         this.updatedAt = null;
-        return
+
+        return;
     }
 }
 
