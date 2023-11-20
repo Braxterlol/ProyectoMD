@@ -1,0 +1,85 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "Pruebas_proyecto",
+    "dateExported": "2023-11-20T16:05:11.151Z",
+    "version": "1.1",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "1b334814-72f5-4cc4-af28-d8ad5805c71b",
+            "colId": "27bd8609-3100-4f67-b66d-b70d32f8464f",
+            "containerId": "",
+            "name": "usuarios",
+            "url": "http://localhost:4000/usuarios",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2023-11-19T00:13:53.837Z",
+            "modified": "2023-11-20T15:54:07.652Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"email\": \"hola@gmail.com\",\n  \"password\": \"hola\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "7cd4cc73-bde7-4d81-9f77-eb4d1bab9cca",
+            "colId": "27bd8609-3100-4f67-b66d-b70d32f8464f",
+            "containerId": "",
+            "name": "productos",
+            "url": "http://localhost:4000/productos",
+            "method": "GET",
+            "sortNum": 30000,
+            "created": "2023-11-19T21:17:53.976Z",
+            "modified": "2023-11-20T15:54:00.362Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"nombre\": \"taco de ubre\",\n  \"descripcion\": \"tacos cocinado\",\n  \"precio\": 14,\n  \"tipo\": \"a\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "bfc84930-fa9b-49d8-89d5-0927da99b71d",
+            "colId": "27bd8609-3100-4f67-b66d-b70d32f8464f",
+            "containerId": "",
+            "name": "pedidos",
+            "url": "http://localhost:4000/pedidos",
+            "method": "POST",
+            "sortNum": 40000,
+            "created": "2023-11-19T21:35:25.580Z",
+            "modified": "2023-11-20T15:57:47.949Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"fecha\": \"23/11/20\",\n  \"estado\": \"entregado\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "abdbb625-9e15-4bba-b63f-d958ff9ecd94",
+            "colId": "27bd8609-3100-4f67-b66d-b70d32f8464f",
+            "containerId": "",
+            "name": "detallePedido",
+            "url": "http://localhost:4000/detallePedidos",
+            "method": "POST",
+            "sortNum": 50000,
+            "created": "2023-11-19T21:41:38.528Z",
+            "modified": "2023-11-20T15:56:15.768Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"PedidoID\": 1,\n  \"ProductoID\": 1,\n  \"cantidad\": 2,\n  \"precio_unitario\": 32\n}",
+                "form": []
+            },
+            "tests": []
+        }
+    ]
+}
