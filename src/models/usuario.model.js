@@ -2,7 +2,7 @@ const db = require('../configs/db.config');
 
 class Usuario {
 
-    constructor({ id, email, password, deleted, createdAt, updatedAt, deletedAt }) {
+    constructor({ id, email, password, createdAt, updatedAt}) {
         this.id = id;
         this.email = email;
         this.password = password;
