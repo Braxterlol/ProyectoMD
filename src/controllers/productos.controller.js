@@ -62,7 +62,7 @@ const create = async (req, res) => {
             nombre: req.body.nombre,
             descripcion: req.body.descripcion,
             precio: req.body.precio,
-            tipo: req.body.tipo
+            tipo: req.body.tipo,
         });
 
         await producto.save();
@@ -79,22 +79,6 @@ const create = async (req, res) => {
     }
 }
 
-const deleteLogico = async (req, res) => {
-    try {
-        const idProducto = req.params.id;
-
-        await Producto.deleteLogicoById(idProducto);
-
-        return res.status(200).json({
-            message: "se eliminó el producto correctamente"
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "ocurrió un error al eliminar el producto",
-            error: error.message
-        })
-    }
-}
 
 const deleteFisico = async (req, res) => {
     try {
@@ -140,6 +124,6 @@ module.exports = {
     index,
     getById,
     create,
-    delete: deleteLogico,
+    delete: deleteFisico,
     update
 }

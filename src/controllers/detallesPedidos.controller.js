@@ -56,23 +56,6 @@ const getById = async (req, res) => {
     }
 }
 
-const getByPedidoId = async (req, res) => {
-    try {
-        const pedidoId = req.params.pedidoId;
-        const detallesPedidos = await DetallePedido.getByPedidoId(pedidoId);
-
-        return res.status(200).json({
-            message: `detalles de pedidos del pedido con id ${pedidoId} obtenidos exitosamente`,
-            data: detallesPedidos
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "ocurrió un error al obtener los detalles de pedidos",
-            error: error.message
-        });
-    }
-}
-
 const deleteFisico = async (req, res) => {
     try {
         const idDetallePedido = req.params.id;
@@ -89,15 +72,15 @@ const deleteFisico = async (req, res) => {
         })
     }
 }
-
 const create = async (req, res) => {
     try {
         const detallePedido = new DetallePedido({
-            pedidoId: req.body.pedidoId,
-            productoId: req.body.productoId,
+            PedidoID: req.body.PedidoID,
+            ProductoID: req.body.ProductoID,
             cantidad: req.body.cantidad,
-            precioUnitario: req.body.precioUnitario
+            precio_unitario: req.body.precio_unitario
         });
+        console.log(detallePedido);
 
         await detallePedido.save();
 
@@ -105,15 +88,16 @@ const create = async (req, res) => {
             message: "detalle del pedido creado exitosamente",
             detallePedido
         });
-    } catch (error) {
+    }  catch (error) {
         return res.status(500).json({
             message: "ocurrió un error al crear el detalle del pedido",
-            error: error.message
+            error: error.message,
+            stack: error.stack
         });
-    }
-
-    
+   }
 }
+
+
 const update = async (req, res) => {
     try {
         const idDetallePedido = req.params.id;
@@ -121,7 +105,7 @@ const update = async (req, res) => {
             pedidoId: req.body.pedidoId,
             productoId: req.body.productoId,
             cantidad: req.body.cantidad,
-            precioUnitario: req.body.precioUnitario
+            precioUnitario: req.body.precio_unitario 
         }
 
         await DetallePedido.updateById(idDetallePedido, datosActualizar);
@@ -140,7 +124,6 @@ const update = async (req, res) => {
 module.exports = {
     index,
     getById,
-    getByPedidoId,
     delete: deleteFisico,
     create,
     update

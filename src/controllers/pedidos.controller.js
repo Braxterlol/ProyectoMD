@@ -60,7 +60,6 @@ const create = async (req, res) => {
     try {
         const pedido = new Pedido({
             fecha: req.body.fecha,
-            hora: req.body.hora,
             estado: req.body.estado
         });
 
@@ -78,24 +77,8 @@ const create = async (req, res) => {
     }
 }
 
-const deleteLogico = async (req, res) => {
-    try {
-        const idPedido = req.params.id;
 
-        await Pedido.deleteLogicoById(idPedido);
-
-        return res.status(200).json({
-            message: "se eliminó el pedido correctamente"
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "ocurrió un error al eliminar el pedido",
-            error: error.message
-        })
-    }
-}
-
-const deleteFisico = async (req, res) => {
+const  deleteFisicoById = async (req, res) => {
     try {
         const idPedido = req.params.id;
 
@@ -117,7 +100,6 @@ const update = async (req, res) => {
         const idPedido = req.params.id;
         const datosActualizar = {
             fecha: req.body.fecha,
-            hora: req.body.hora,
             estado: req.body.estado
         }
 
@@ -138,6 +120,6 @@ module.exports = {
     index,
     getById,
     create,
-    delete: deleteLogico,
+    delete: deleteFisicoById,
     update
 }
