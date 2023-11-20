@@ -79,24 +79,7 @@ const create = async (req, res) => {
     }
 }
 
-const deleteLogico = async (req, res) => {
-    try {
-        const idUsuario = req.params.id;
-
-        await Usuario.deleteLogicoById(idUsuario);
-
-        return res.status(200).json({
-            message: "se eliminó el usuario correctamente"
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "ocurrió un error al eliminar el usuario",
-            error: error.message
-        })
-    }
-}
-
-const deleteFisico = async (req, res) => {
+const deleteFisicoById = async (req, res) => {
     try {
         const idUsuario = req.params.id;
 
@@ -113,6 +96,7 @@ const deleteFisico = async (req, res) => {
     }
 }
 
+
 const update = async (req, res) => {
     try {
         const idUsuario = req.params.id;
@@ -120,7 +104,7 @@ const update = async (req, res) => {
             email: req.body.email,
             password: req.body.password
         }
-
+        
         await Usuario.updateById(idUsuario, datosActualizar);
 
         return res.status(200).json({
@@ -138,6 +122,6 @@ module.exports = {
     index,
     getById,
     create,
-    delete: deleteLogico,
+    delete: deleteFisicoById,
     update
 }

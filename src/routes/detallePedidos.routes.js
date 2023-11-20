@@ -7,7 +7,7 @@ router.get('/', detallesPedidosController.index);
 router.get('/:id', detallesPedidosController.getById);
 router.post('/', detallesPedidosController.create);
 router.delete('/:id', detallesPedidosController.delete);
-router.patch('/:id', detallesPedidosController.update);
+router.put('/:id', detallesPedidosController.update);
 
 
 module.exports = router;
