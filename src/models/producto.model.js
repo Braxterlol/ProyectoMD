@@ -71,25 +71,51 @@ class Producto {
         return;
     }
 
+    static async getByTipo(tipo) {
+        const connection = await db.createConnection();
+        const [rows] = await connection.execute("SELECT ProductoID, nombre, descripcion, precio, tipo, estatus, created_at AS createdAt, updated_at AS updatedAt FROM productos WHERE tipo = ?", [tipo]);
+        connection.end();
+    
+        return rows.map(row => new Producto({
+            ProductoID: row.ProductoID,
+            nombre: row.nombre,
+            descripcion: row.descripcion,
+            precio: row.precio,
+            tipo: row.tipo,
+            estatus: row.estatus,
+            createdAt: row.createdAt,
+            updatedAt: row.updatedAt
+        }));
+    }
+
     async save() {
         const connection = await db.createConnection();
-
-        const createdAt = new Date();
-        const [result] = await connection.execute("INSERT INTO productos (nombre, descripcion, precio, tipo, estatus, created_at) VALUES (?, ?, ?, ?, ?, ?)", [this.nombre, this.descripcion, this.precio, this.tipo, this.estatus, createdAt]);
-
-        connection.end();
-
-        if (result.insertId === 0) {
-            throw new Error("No se insertó el producto");
-        }
-
-        this.ProductoID = result.insertId;
-        this.createdAt = createdAt;
-        this.updatedAt = null;
-
-        return
-    }
     
+        try {
+            // Verificar si ya existe un producto con el mismo nombre
+            const [existingProduct] = await connection.execute("SELECT ProductoID FROM productos WHERE nombre = ? LIMIT 1", [this.nombre]);
+    
+            if (existingProduct.length !== 0) {
+                throw new Error("Ya existe un producto con este nombre");
+            }
+    
+            const createdAt = new Date();
+            const [result] = await connection.execute("INSERT INTO productos (nombre, descripcion, precio, tipo, estatus, created_at) VALUES (?, ?, ?, ?, ?, ?)", [this.nombre, this.descripcion, this.precio, this.tipo, this.estatus, createdAt]);
+    
+            if (result.insertId === 0) {
+                throw new Error("No se insertó el producto");
+            }
+    
+            this.ProductoID = result.insertId;
+            this.createdAt = createdAt;
+            this.updatedAt = null;
+    
+            return;
+        } catch (error) {
+            throw error; // Propaga el error para que pueda ser manejado en el controlador
+        } finally {
+            connection.end();
+        }
+    }
 }
-
 module.exports = Producto;

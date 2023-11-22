@@ -1,6 +1,4 @@
 const Producto = require('../models/producto.model');
-const multer = require('multer');
-const path = require('path');
 
 const index = async (req, res) => {
     try {
@@ -123,10 +121,36 @@ const update = async (req, res) => {
     }
 }
 
+const getByTipo = async (req, res) => {
+    try {
+        const tipo = req.params.tipo;
+
+        // Validar que el tipo sea "a" o "b" (puedes ajustar según tus necesidades)
+        if (tipo !== 'a' && tipo !== 'b') {
+            return res.status(400).json({
+                message: "Tipo no válido. Debe ser 'a' o 'b'."
+            });
+        }
+
+        const productos = await Producto.getByTipo(tipo);
+
+        return res.status(200).json({
+            message: "Productos obtenidos por tipo exitosamente",
+            data: productos
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Ocurrió un error al obtener productos por tipo",
+            error: error.message
+        });
+    }
+}
+
 module.exports = {
     index,
     getById,
     create,
     delete: deleteFisico,
-    update
+    update,
+    getByTipo
 }
