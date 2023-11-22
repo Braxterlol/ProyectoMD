@@ -1,4 +1,4 @@
-const DetallePedido = require('../models/detallePedido.model');
+const DetallePedido = require('../models/detallepedido.model');
 
 const index = async (req, res) => {
     try {
@@ -15,11 +15,11 @@ const index = async (req, res) => {
         };
 
         if (page && limit) {
-            const totalDetalles = await DetallePedido.count();
+            const totalDetallesPedidos = await DetallePedido.count();
             response = {
                 ...response,
-                total: totalDetalles,
-                totalPages: Math.ceil(totalDetalles / limit),
+                total: totalDetallesPedidos,
+                totalPages: Math.ceil(totalDetallesPedidos / limit),
                 currentPage: page
             };
         }
@@ -40,38 +40,22 @@ const getById = async (req, res) => {
 
         if (!detallePedido) {
             return res.status(404).json({
-                message: `no se encontró el detalle del pedido con id ${idDetallePedido}`
+                message: `no se encontró el detalle de pedido con id ${idDetallePedido}`
             });
-        };
+        }
 
         return res.status(200).json({
-            message: "detalle del pedido encontrado exitosamente",
+            message: "detalle de pedido encontrado exitosamente",
             detallePedido
         });
     } catch (error) {
         return res.status(500).json({
-            message: "ocurrió un error al obtener el detalle del pedido",
+            message: "ocurrió un error al obtener el detalle de pedido",
             error: error.message
         });
     }
 }
 
-const deleteFisico = async (req, res) => {
-    try {
-        const idDetallePedido = req.params.id;
-
-        await DetallePedido.deleteFisicoById(idDetallePedido);
-
-        return res.status(200).json({
-            message: "se eliminó el detalle del pedido correctamente"
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "ocurrió un error al eliminar el detalle del pedido",
-            error: error.message
-        })
-    }
-}
 const create = async (req, res) => {
     try {
         const detallePedido = new DetallePedido({
@@ -80,51 +64,65 @@ const create = async (req, res) => {
             cantidad: req.body.cantidad,
             precio_unitario: req.body.precio_unitario
         });
-        console.log(detallePedido);
 
         await detallePedido.save();
 
         return res.status(200).json({
-            message: "detalle del pedido creado exitosamente",
+            message: "detalle de pedido creado exitosamente",
             detallePedido
         });
-    }  catch (error) {
+    } catch (error) {
         return res.status(500).json({
-            message: "ocurrió un error al crear el detalle del pedido",
-            error: error.message,
-            stack: error.stack
+            message: "ocurrió un error al crear el detalle de pedido",
+            error: error.message
         });
-   }
+    }
 }
 
+const deleteFisicoById = async (req, res) => {
+    try {
+        const idDetallePedido = req.params.id;
+
+        await DetallePedido.deleteFisicoById(idDetallePedido);
+
+        return res.status(200).json({
+            message: "se eliminó el detalle de pedido correctamente"
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "ocurrió un error al eliminar el detalle de pedido",
+            error: error.message
+        });
+    }
+}
 
 const update = async (req, res) => {
     try {
         const idDetallePedido = req.params.id;
         const datosActualizar = {
-            pedidoId: req.body.pedidoId,
-            productoId: req.body.productoId,
+            PedidoID: req.body.PedidoID,
+            ProductoID: req.body.ProductoID,
             cantidad: req.body.cantidad,
-            precioUnitario: req.body.precio_unitario 
+            precio_unitario: req.body.precio_unitario
         }
 
         await DetallePedido.updateById(idDetallePedido, datosActualizar);
 
         return res.status(200).json({
-            message: "el detalle del pedido se actualizó correctamente"
-        })
+            message: "el detalle de pedido se actualizó correctamente"
+        });
     } catch (error) {
         return res.status(500).json({
-            message: "ocurrió un error al actualizar el detalle del pedido",
+            message: "ocurrió un error al actualizar el detalle de pedido",
             error: error.message
-        })
+        });
     }
 }
 
 module.exports = {
     index,
     getById,
-    delete: deleteFisico,
     create,
+    delete: deleteFisicoById,
     update
 }
