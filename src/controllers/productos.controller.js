@@ -1,4 +1,6 @@
 const Producto = require('../models/producto.model');
+const multer = require('multer');
+const path = require('path');
 
 const index = async (req, res) => {
     try {
@@ -63,6 +65,7 @@ const create = async (req, res) => {
             descripcion: req.body.descripcion,
             precio: req.body.precio,
             tipo: req.body.tipo,
+            estatus: req.body.estatus || 1
         });
 
         await producto.save();
@@ -78,7 +81,6 @@ const create = async (req, res) => {
         });
     }
 }
-
 
 const deleteFisico = async (req, res) => {
     try {
@@ -104,7 +106,8 @@ const update = async (req, res) => {
             nombre: req.body.nombre,
             descripcion: req.body.descripcion,
             precio: req.body.precio,
-            tipo: req.body.tipo
+            tipo: req.body.tipo,
+            estatus: req.body.estatus 
         }
 
         await Producto.updateById(idProducto, datosActualizar);

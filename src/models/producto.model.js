@@ -1,19 +1,20 @@
 const db = require('../configs/db.config');
 
 class Producto {
-    constructor({ ProductoID, nombre, descripcion, precio, tipo, createdAt, updatedAt }) {
+    constructor({ ProductoID, nombre, descripcion, precio, tipo, estatus, createdAt, updatedAt }) {
         this.ProductoID = ProductoID;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
         this.tipo = tipo;
+        this.estatus = estatus;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
     static async getAll({ offset, limit }, { sort, order }) {
         const connection = await db.createConnection();
-        let query = "SELECT ProductoID, nombre, descripcion, precio, tipo, created_at, updated_at FROM productos";
+        let query = "SELECT ProductoID, nombre, descripcion, precio, tipo, estatus, created_at, updated_at FROM productos";
 
         if (sort && order) {
             query += ` ORDER BY ${sort} ${order}`;
@@ -31,12 +32,12 @@ class Producto {
 
     static async getById(ProductoID) {
         const connection = await db.createConnection();
-        const [rows] = await connection.execute("SELECT ProductoID, nombre, descripcion, precio, tipo, created_at AS createdAt, updated_at AS updatedAt FROM productos WHERE ProductoID = ?", [ProductoID]);
+        const [rows] = await connection.execute("SELECT ProductoID, nombre, descripcion, precio, tipo, estatus, created_at AS createdAt, updated_at AS updatedAt FROM productos WHERE ProductoID = ?", [ProductoID]);
         connection.end();
 
         if (rows.length > 0) {
             const row = rows[0];
-            return new Producto({ ProductoID: row.ProductoID, nombre: row.nombre, descripcion: row.descripcion, precio: row.precio, tipo: row.tipo, createdAt: row.createdAt, updatedAt: row.updatedAt });
+            return new Producto({ ProductoID: row.ProductoID, nombre: row.nombre, descripcion: row.descripcion, precio: row.precio, tipo: row.tipo, estatus: row.estatus, createdAt: row.createdAt, updatedAt: row.updatedAt });
         }
 
         return null;
@@ -55,11 +56,11 @@ class Producto {
         return;
     }
 
-    static async updateById(ProductoID, { nombre, descripcion, precio, tipo }) {
+    static async updateById(ProductoID, { nombre, descripcion, precio, tipo, estatus }) {
         const connection = await db.createConnection();
 
         const updatedAt = new Date();
-        const [result] = await connection.execute("UPDATE productos SET nombre = ?, descripcion = ?, precio = ?, tipo = ?, updated_at = ? WHERE ProductoID = ?", [nombre, descripcion, precio, tipo, updatedAt, ProductoID]);
+        const [result] = await connection.execute("UPDATE productos SET nombre = ?, descripcion = ?, precio = ?, tipo = ?, estatus = ?, updated_at = ? WHERE ProductoID = ?", [nombre, descripcion, precio, tipo, estatus, updatedAt, ProductoID]);
 
         connection.end();
 
@@ -69,11 +70,12 @@ class Producto {
 
         return;
     }
+
     async save() {
         const connection = await db.createConnection();
 
         const createdAt = new Date();
-        const [result] = await connection.execute("INSERT INTO productos (nombre, descripcion, precio, tipo, created_at) VALUES (?, ?, ?, ?, ?)", [this.nombre, this.descripcion, this.precio, this.tipo, createdAt]);
+        const [result] = await connection.execute("INSERT INTO productos (nombre, descripcion, precio, tipo, estatus, created_at) VALUES (?, ?, ?, ?, ?, ?)", [this.nombre, this.descripcion, this.precio, this.tipo, this.estatus, createdAt]);
 
         connection.end();
 
@@ -87,6 +89,7 @@ class Producto {
 
         return
     }
+    
 }
 
 module.exports = Producto;
