@@ -56,11 +56,11 @@ class Producto {
         return;
     }
 
-    static async updateById(ProductoID, { nombre, descripcion, precio, tipo, estatus }) {
+    static async updateById(ProductoID, { nombre, descripcion, precio, tipo }) {
         const connection = await db.createConnection();
 
         const updatedAt = new Date();
-        const [result] = await connection.execute("UPDATE productos SET nombre = ?, descripcion = ?, precio = ?, tipo = ?, estatus = ?, updated_at = ? WHERE ProductoID = ?", [nombre, descripcion, precio, tipo, estatus, updatedAt, ProductoID]);
+        const [result] = await connection.execute("UPDATE productos SET nombre = ?, descripcion = ?, precio = ?, tipo = ?, updated_at = ? WHERE ProductoID = ?", [nombre, descripcion, precio, tipo, updatedAt, ProductoID]);
 
         connection.end();
 
@@ -87,6 +87,26 @@ class Producto {
             updatedAt: row.updatedAt
         }));
     }
+
+    static async updateEstatusById(ProductoID, estatus) {
+        const connection = await db.createConnection();
+    
+        try {
+          const updatedAt = new Date();
+          const [result] = await connection.execute("UPDATE productos SET estatus = ?, updated_at = ? WHERE ProductoID = ?", [estatus, updatedAt, ProductoID]);
+    
+          if (result.affectedRows === 0) {
+            throw new Error("No se actualizó el estatus del producto");
+          }
+    
+          return;
+        } catch (error) {
+          throw error; 
+        } finally {
+          connection.end();
+        }
+      }
+    
 
     async save() {
         const connection = await db.createConnection();

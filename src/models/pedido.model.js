@@ -67,7 +67,7 @@ class Pedido {
         return;
     }
    
-    //const formattedDate = createdAt.toISOString().slice(0, 19).replace("T", " ");
+  
 
     async save(detalles) {
         const connection = await db.createConnection();
