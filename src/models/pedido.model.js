@@ -66,25 +66,57 @@ class Pedido {
 
         return;
     }
+   
+    //const formattedDate = createdAt.toISOString().slice(0, 19).replace("T", " ");
 
-    async save() {
+    async save(detalles) {
         const connection = await db.createConnection();
-
-        const createdAt = new Date();
-        const [result] = await connection.execute("INSERT INTO pedidos (fecha, estado, created_at) VALUES (?, ?, ?)", [this.fecha, this.estado, createdAt]);
-
-        connection.end();
-
-        if (result.insertId === 0) {
-            throw new Error("No se insertó el pedido");
+    
+        // Iniciar la transacción
+        await connection.beginTransaction();
+    
+        try {
+            const createdAt = new Date();
+            const formattedDate = createdAt.toISOString().slice(0, 19).replace("T", " ");
+    
+            // Insertar el pedido principal
+            const [resultPedido] = await connection.execute("INSERT INTO pedidos (fecha, estado, created_at) VALUES (?, ?, ?)", [createdAt, this.estado, createdAt]);
+    
+            if (resultPedido.insertId === 0) {
+                throw new Error("No se insertó el pedido");
+            }
+    
+            // Guardar el ID del pedido principal
+            this.id = resultPedido.insertId;
+            this.createdAt = createdAt;
+            this.updatedAt = null;
+    
+            // Iterar sobre los detalles del pedido y agregarlos a la base de datos
+            for (const detalleInfo of detalles) {
+                const [resultDetalle] = await connection.execute("INSERT INTO detallepedido (PedidoID, ProductoID, cantidad, precio_unitario, created_at) VALUES (?, ?, ?, ?, ?)", [this.id, detalleInfo.ProductoID, detalleInfo.cantidad, detalleInfo.precio_unitario, createdAt]);
+    
+                if (resultDetalle.insertId === 0) {
+                    throw new Error("No se insertó el detalle del pedido");
+                }
+            }
+    
+            // Confirmar la transacción
+            await connection.commit();
+    
+            console.log('Pedido y detalles guardados exitosamente');
+        } catch (error) {
+            // Revertir la transacción en caso de error
+            await connection.rollback();
+            console.error('Error al guardar el pedido y detalles:', error);
+            throw error; // Puedes manejar el error según tus necesidades
+        } finally {
+            // Cerrar la conexión
+            connection.end();
         }
-
-        this.id = result.insertId;
-        this.createdAt = createdAt;
-        this.updatedAt = null;
-
-        return
     }
+    
 }
+
+
 
 module.exports = Pedido;

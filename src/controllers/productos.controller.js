@@ -1,4 +1,5 @@
 const Producto = require('../models/producto.model');
+const socketConfig = require('../configs/socket.config');
 
 const index = async (req, res) => {
     try {
@@ -99,27 +100,28 @@ const deleteFisico = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        const idProducto = req.params.id;
-        const datosActualizar = {
-            nombre: req.body.nombre,
-            descripcion: req.body.descripcion,
-            precio: req.body.precio,
-            tipo: req.body.tipo,
-            estatus: req.body.estatus 
-        }
-
-        await Producto.updateById(idProducto, datosActualizar);
-
-        return res.status(200).json({
-            message: "el producto se actualizó correctamente"
-        })
+      const idProducto = req.params.id;
+      const datosActualizar = {
+        estatus: req.body.estatus,
+      };
+  
+      // Actualiza el producto en la base de datos
+      await Producto.updateById(idProducto, datosActualizar);
+  
+      // Emite un evento a través de Socket.io para notificar a los clientes sobre la actualización
+      const io = socketConfig.getIo();
+      io.emit('producto-actualizado', { idProducto, ...datosActualizar });
+  
+      return res.status(200).json({
+        message: 'El producto se actualizó correctamente',
+      });
     } catch (error) {
-        return res.status(500).json({
-            message: "ocurrió un error al actualizar el producto",
-            error: error.message
-        })
+      return res.status(500).json({
+        message: 'Ocurrió un error al actualizar el producto',
+        error: error.message,
+      });
     }
-}
+  };
 
 const getByTipo = async (req, res) => {
     try {

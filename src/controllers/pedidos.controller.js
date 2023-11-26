@@ -63,7 +63,10 @@ const create = async (req, res) => {
             estado: req.body.estado
         });
 
-        await pedido.save();
+        // Supongamos que detalles proviene del cuerpo de la solicitud
+        const detalles = req.body.detalles;
+
+        await pedido.save(detalles);
 
         return res.status(200).json({
             message: "pedido creado exitosamente",
