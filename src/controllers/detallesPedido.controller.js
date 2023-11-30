@@ -119,10 +119,45 @@ const update = async (req, res) => {
     }
 }
 
+const totalFecha = async (req, res) => {
+    try {
+        const fechaPedido = req.params.fecha;
+
+        const totalPedidos = await DetallePedido.calcularTotalPedidosPorFecha(fechaPedido);
+
+        return res.status(200).json({
+            message: `Total de pedidos para ${fechaPedido}: ${totalPedidos}`,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Ocurrió un error al calcular el total de pedidos por fecha",
+            error: error.message,
+        });
+    }
+};
+
+const total = async (req, res) => {
+    try {
+        const totalPedidos = await DetallePedido.calcularTotalPedidos();
+
+        return res.status(200).json({
+            message: 'Total de pedidos calculado exitosamente',
+            totalPedidos,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: 'Ocurrió un error al calcular el total de pedidos',
+            error: error.message,
+        });
+    }
+};
+
 module.exports = {
     index,
     getById,
     create,
+    totalFecha,
+    total,
     delete: deleteLogicoById,
     update
 }
