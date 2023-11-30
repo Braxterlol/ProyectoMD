@@ -7,12 +7,8 @@ function init(server) {
 
   io.on('connection', (socket) => {
     console.log('Usuario conectado:', socket.id);
-
-    // Ejemplo: Manejar un evento personalizado 'actualizar-producto'
     socket.on('actualizar-producto', (data) => {
       console.log('Evento "actualizar-producto" recibido:', data);
-
-      // Aquí puedes realizar la lógica necesaria, por ejemplo, emitir a otros clientes
       io.emit('producto-actualizado', data);
     });
 

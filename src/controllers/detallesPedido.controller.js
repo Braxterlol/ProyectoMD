@@ -1,4 +1,4 @@
-const DetallePedido = require('../models/detallepedido.model');
+const DetallePedido = require('../models/detallePedido.model');
 
 const index = async (req, res) => {
     try {
@@ -79,7 +79,7 @@ const create = async (req, res) => {
     }
 }
 
-const deleteFisicoById = async (req, res) => {
+const deleteLogicoById = async (req, res) => {
     try {
         const idDetallePedido = req.params.id;
 
@@ -123,6 +123,6 @@ module.exports = {
     index,
     getById,
     create,
-    delete: deleteFisicoById,
+    delete: deleteLogicoById,
     update
 }

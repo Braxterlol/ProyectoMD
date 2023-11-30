@@ -4,6 +4,7 @@ const pedidosController = require('../controllers/pedidos.controller');
 
 
 router.get('/', pedidosController.index);
+router.get('/paginados', pedidosController.getPaginatedOrders);
 router.get('/:id', pedidosController.getById);
 router.post('/', pedidosController.create);
 router.delete('/:id', pedidosController.delete);
