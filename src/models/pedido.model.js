@@ -11,7 +11,7 @@ class Pedido {
 
     static async getAll({ offset, limit }, { sort, order }) {
         const connection = await db.createConnection();
-        let query = "SELECT PedidoID, fecha, estado, created_at, updated_at FROM pedidos";
+        let query = "SELECT pedido_id, fecha, estado, created_at, updated_at FROM pedidos where deleted = 0";
 
         if (sort && order) {
             query += ` ORDER BY ${sort} ${order}`;
@@ -29,7 +29,7 @@ class Pedido {
 
     static async getById(PedidoID) {
         const connection = await db.createConnection();
-        const [rows] = await connection.execute("SELECT PedidoID, fecha, estado, created_at AS createdAt, updated_at AS updatedAt FROM pedidos WHERE PedidoID = ?", [PedidoID]);
+        const [rows] = await connection.execute("SELECT pedido_id, fecha, estado, created_at AS createdAt, updated_at AS updatedAt FROM pedidos WHERE PedidoID = ?", [PedidoID]);
         connection.end();
 
         if (rows.length > 0) {
@@ -40,23 +40,40 @@ class Pedido {
         return null;
     }
 
-    static async deleteFisicoById(PedidoID) {
+    static async deleteLogicoById(id) {
         const connection = await db.createConnection();
-        const [result] = await connection.execute("DELETE FROM pedidos WHERE PedidoID = ?", [PedidoID]);
+        const [result] = await connection.execute("UPDATE pedidos SET deleted = 1 WHERE id = ?", [id]);
         connection.end();
-
+    
         if (result.affectedRows === 0) {
-            throw new Error("No se eliminó el pedido");
+            throw new Error("No se desactivó el usuario");
         }
-
+    
         return;
     }
 
+    static async getPaginatedOrders({ offset, limit }) {
+        const connection = await db.createConnection();
+
+        try {
+            const [results, fields] = await connection.execute('CALL obtener_pedidos_paginados(?, ?, @total)', [offset, limit]);
+            const [totalRows] = await connection.query('SELECT @total AS total');
+            const total = totalRows[0].total;
+
+            return { pedidos: results[0], total };
+        } catch (error) {
+            console.error('Error al llamar al stored procedure para obtener pedidos paginados:', error);
+            throw error;
+        } finally {
+            connection.end();
+        }
+    }
+    
     static async updateById(PedidoID, { fecha, estado }) {
         const connection = await db.createConnection();
 
         const updatedAt = new Date();
-        const [result] = await connection.execute("UPDATE pedidos SET fecha = ?, estado = ?, updated_at = ? WHERE PedidoID = ?", [fecha, estado, updatedAt, PedidoID]);
+        const [result] = await connection.execute("UPDATE pedidos SET fecha = ?, estado = ?, updated_at = ? WHERE pedido_id = ?", [fecha, estado, updatedAt, PedidoID]);
 
         connection.end();
 
@@ -93,7 +110,7 @@ class Pedido {
     
             // Iterar sobre los detalles del pedido y agregarlos a la base de datos
             for (const detalleInfo of detalles) {
-                const [resultDetalle] = await connection.execute("INSERT INTO detallepedido (PedidoID, ProductoID, cantidad, precio_unitario, created_at) VALUES (?, ?, ?, ?, ?)", [this.id, detalleInfo.ProductoID, detalleInfo.cantidad, detalleInfo.precio_unitario, createdAt]);
+                const [resultDetalle] = await connection.execute("INSERT INTO detalle_pedido (pedido_id, producto_id, cantidad, precio_unitario, created_at) VALUES (?, ?, ?, ?, ?)", [this.id, detalleInfo.ProductoID, detalleInfo.cantidad, detalleInfo.precio_unitario, createdAt]);
     
                 if (resultDetalle.insertId === 0) {
                     throw new Error("No se insertó el detalle del pedido");

@@ -81,7 +81,7 @@ const create = async (req, res) => {
 }
 
 
-const  deleteFisicoById = async (req, res) => {
+const  deleteLogicoById = async (req, res) => {
     try {
         const idPedido = req.params.id;
 
@@ -119,10 +119,25 @@ const update = async (req, res) => {
     }
 }
 
+const getPaginatedOrders = async (req, res) => {
+    try {
+        const { page = 1, pageSize = 10 } = req.query;
+        const offset = (page - 1) * pageSize;
+
+        const { pedidos, total } = await Pedido.getPaginatedOrders({ offset, limit: parseInt(pageSize) });
+
+        res.json({ pedidos, total });
+    } catch (error) {
+        console.error('Error al obtener pedidos paginados:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
 module.exports = {
     index,
     getById,
     create,
-    delete: deleteFisicoById,
-    update
+    delete: deleteLogicoById,
+    update,
+    getPaginatedOrders
 }

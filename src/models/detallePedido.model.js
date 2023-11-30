@@ -13,7 +13,7 @@ class DetallePedido {
 
     static async getAll({ offset, limit }, { sort, order }) {
         const connection = await db.createConnection();
-        let query = "SELECT DetallePedidoID, PedidoID, ProductoID, cantidad, precio_unitario, created_at, updated_at FROM detallepedido";
+        let query = "SELECT detalle_pedido_id, pedido_id, producto_id, cantidad, precio_unitario, created_at, updated_at FROM detalle_pedido";
 
         if (sort && order) {
             query += ` ORDER BY ${sort} ${order}`;
@@ -39,7 +39,7 @@ class DetallePedido {
 
     static async getById(DetallePedidoID) {
         const connection = await db.createConnection();
-        const [rows] = await connection.execute("SELECT DetallePedidoID, PedidoID, ProductoID, cantidad, precio_unitario, created_at AS createdAt, updated_at AS updatedAt FROM detallepedido WHERE DetallePedidoID = ?", [DetallePedidoID]);
+        const [rows] = await connection.execute("SELECT detalle_pedido_id, pedido_id, producto_id, cantidad, precio_unitario, created_at AS createdAt, updated_at AS updatedAt FROM detalle_pedido WHERE detalle_pedido_id = ?", [DetallePedidoID]);
         connection.end();
 
         if (rows.length > 0) {
@@ -58,23 +58,24 @@ class DetallePedido {
         return null;
     }
 
-    static async deleteFisicoById(DetallePedidoID) {
+    static async deleteLogicoById(id) {
         const connection = await db.createConnection();
-        const [result] = await connection.execute("DELETE FROM detallepedido WHERE DetallePedidoID = ?", [DetallePedidoID]);
+        const [result] = await connection.execute("UPDATE detalle_pedido SET deleted = 1 WHERE id = ?", [id]);
         connection.end();
-
+    
         if (result.affectedRows === 0) {
-            throw new Error("No se eliminó el detalle del pedido");
+            throw new Error("No se desactivó el usuario");
         }
-
+    
         return;
     }
+    
 
     static async updateById(DetallePedidoID, { PedidoID, ProductoID, cantidad, precio_unitario }) {
         const connection = await db.createConnection();
 
         const updatedAt = new Date();
-        const [result] = await connection.execute("UPDATE detallepedido SET PedidoID = ?, ProductoID = ?, cantidad = ?, precio_unitario = ?, updated_at = ? WHERE DetallePedidoID = ?", [PedidoID, ProductoID, cantidad, precio_unitario, updatedAt, DetallePedidoID]);
+        const [result] = await connection.execute("UPDATE detalle_pedido SET pedido_id = ?, producto_id = ?, cantidad = ?, precio_unitario = ?, updated_at = ? WHERE detalle_pedido_id = ?", [PedidoID, ProductoID, cantidad, precio_unitario, updatedAt, DetallePedidoID]);
 
         connection.end();
 
@@ -89,7 +90,7 @@ class DetallePedido {
         const connection = await db.createConnection();
 
         const createdAt = new Date();
-        const [result] = await connection.execute("INSERT INTO detallepedido (PedidoID, ProductoID, cantidad, precio_unitario, created_at) VALUES (?, ?, ?, ?, ?)", [this.PedidoID, this.ProductoID, this.cantidad, this.precio_unitario, createdAt]);
+        const [result] = await connection.execute("INSERT INTO detalle_pedido (pedido_id, producto_id, cantidad, precio_unitario, created_at) VALUES (?, ?, ?, ?, ?)", [this.PedidoID, this.ProductoID, this.cantidad, this.precio_unitario, createdAt]);
 
         connection.end();
 

@@ -62,15 +62,15 @@ class Usuario {
         return null;
     }
 
-    static async deleteFisicoById(id) {
+    static async deleteLogicoById(id) {
         const connection = await db.createConnection();
-        const [result] = await connection.execute("DELETE FROM usuarios WHERE id = ?", [id]);
+        const [result] = await connection.execute("UPDATE usuarios SET deleted = 1 WHERE id = ?", [id]);
         connection.end();
-
+    
         if (result.affectedRows === 0) {
-            throw new Error("No se eliminó el usuario");
+            throw new Error("No se desactivó el usuario");
         }
-
+    
         return;
     }
 

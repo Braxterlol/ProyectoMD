@@ -8,6 +8,7 @@ async function seedUsuarios() {
         {
             email: 'usuario1@example.com',
             password: bcrypt.hashSync('contraseña1', saltosBcrypt),
+            isAdmin: 0
         },
     ];
 
@@ -17,6 +18,7 @@ async function seedUsuarios() {
         const usuario = new Usuario({
             email: userData.email,
             password: userData.password,
+            isAdmin: userData.isAdmin,
         });
 
         await usuario.save();
