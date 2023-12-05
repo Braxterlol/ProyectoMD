@@ -63,7 +63,7 @@ const create = async (req, res) => {
         const usuario = new Usuario({
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password, saltosBcrypt),
-            isAdmin: req.body.isAdmin || 0 // 0 por defecto si no se proporciona
+            is_admin: req.body.is_admin || 0 // 0 por defecto si no se proporciona
         });
 
         await usuario.save()
