@@ -85,7 +85,7 @@ const deleteLogicoById = async (req, res) => {
     try {
         const idProducto = req.params.id;
 
-        await Producto.deleteFisicoById(idProducto);
+        await Producto.deleteLogicoById(idProducto);
 
         return res.status(200).json({
             message: "se eliminó el producto correctamente"
