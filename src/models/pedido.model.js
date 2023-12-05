@@ -42,7 +42,7 @@ class Pedido {
 
     static async deleteLogicoById(id) {
         const connection = await db.createConnection();
-        const [result] = await connection.execute("UPDATE pedidos SET deleted = 1 WHERE id = ?", [id]);
+        const [result] = await connection.execute("UPDATE pedidos SET deleted = 1 WHERE pedido_id = ?", [id]);
         connection.end();
     
         if (result.affectedRows === 0) {

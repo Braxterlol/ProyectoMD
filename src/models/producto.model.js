@@ -14,7 +14,7 @@ class Producto {
 
     static async getAll({ offset, limit }, { sort, order }) {
         const connection = await db.createConnection();
-        let query = "SELECT producto_id, nombre, descripcion, precio, tipo, estatus, created_at, updated_at FROM productos";
+        let query = "SELECT producto_id, nombre, descripcion, precio, tipo, estatus, created_at, updated_at FROM productos where deleted = 0";
 
         if (sort && order) {
             query += ` ORDER BY ${sort} ${order}`;
@@ -32,7 +32,7 @@ class Producto {
 
     static async getById(ProductoID) {
         const connection = await db.createConnection();
-        const [rows] = await connection.execute("SELECT producto_id, nombre, descripcion, precio, tipo, estatus, created_at AS createdAt, updated_at AS updatedAt FROM productos WHERE producto_id = ?", [ProductoID]);
+        const [rows] = await connection.execute("SELECT producto_id, nombre, descripcion, precio, tipo, estatus, created_at AS createdAt, updated_at AS updatedAt FROM productos WHERE producto_id = ? and producto_id= 0", [ProductoID]);
         connection.end();
 
         if (rows.length > 0) {
@@ -46,7 +46,7 @@ class Producto {
 
     static async deleteLogicoById(id) {
         const connection = await db.createConnection();
-        const [result] = await connection.execute("UPDATE productos SET deleted = 1 WHERE id = ?", [id]);
+        const [result] = await connection.execute("UPDATE productos SET deleted = 1 WHERE producto_id = ?", [id]);
         connection.end();
     
         if (result.affectedRows === 0) {

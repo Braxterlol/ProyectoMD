@@ -6,9 +6,9 @@ const saltosBcrypt = parseInt(process.env.SALTOS_BCRYPT);
 async function seedUsuarios() {
     const usuariosData = [
         {
-            email: 'usuario1@example.com',
-            password: bcrypt.hashSync('contraseña1', saltosBcrypt),
-            isAdmin: 0
+            email: 'user1',
+            password: bcrypt.hashSync('1234', saltosBcrypt),
+            is_admin: 0
         },
     ];
 
@@ -18,7 +18,7 @@ async function seedUsuarios() {
         const usuario = new Usuario({
             email: userData.email,
             password: userData.password,
-            isAdmin: userData.isAdmin,
+            is_admin: userData.is_admin,
         });
 
         await usuario.save();

@@ -86,6 +86,42 @@ class DetallePedido {
         return;
     }
 
+    static async calcularTotalPedidosPorFecha(fechaPedido) {
+        const connection = await db.createConnection();
+
+        try {
+            const [result] = await connection.execute(`SELECT sys.calcular_total_pedidos_por_fecha('${fechaPedido}') AS total_pedidos`);
+
+            if (result.length > 0) {
+                return result[0].total_pedidos || 0; 
+            } else {
+                throw new Error("No se pudo obtener el total de pedidos por fecha");
+            }
+        } catch (error) {
+            throw error;
+        } finally {
+            connection.end();
+        }
+    }
+
+    static async calcularTotalPedidos() {
+        const connection = await db.createConnection();
+
+        try {
+            const [result] = await connection.execute("SELECT sys.calcular_total_pedido() AS total_pedidos");
+
+            if (result.length > 0) {
+                return result[0].total_pedidos || 0; 
+            } else {
+                throw new Error("No se pudo obtener el total de pedidos");
+            }
+        } catch (error) {
+            throw error;
+        } finally {
+            connection.end();
+        }
+    }
+
     async save() {
         const connection = await db.createConnection();
 
