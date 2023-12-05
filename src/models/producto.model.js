@@ -32,7 +32,7 @@ class Producto {
 
     static async getById(ProductoID) {
         const connection = await db.createConnection();
-        const [rows] = await connection.execute("SELECT producto_id, nombre, descripcion, precio, tipo, estatus, created_at AS createdAt, updated_at AS updatedAt FROM productos WHERE producto_id = ? and producto_id= 0", [ProductoID]);
+        const [rows] = await connection.execute("SELECT producto_id, nombre, descripcion, precio, tipo, estatus, created_at AS createdAt, updated_at AS updatedAt FROM productos WHERE producto_id = ?", [ProductoID]);
         connection.end();
 
         if (rows.length > 0) {
