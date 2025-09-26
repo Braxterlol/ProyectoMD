@@ -66,6 +66,7 @@ const create = async (req, res) => {
         });
 
         await detallePedido.save();
+        console.log(detallePedido);
 
         return res.status(200).json({
             message: "detalle de pedido creado exitosamente",
