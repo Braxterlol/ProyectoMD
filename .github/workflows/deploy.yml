@@ -26,10 +26,10 @@ jobs:
         run: docker build -t myapp:${{ github.sha }} .
 
       - name: Tag image
-        run: docker tag myapp:${{ github.sha }} mydockerhubuser/myapp:${{ github.sha }}
+        run: docker tag myapp:${{ github.sha }} braxter/myapp:${{ github.sha }}
 
       - name: Push image
-        run: docker push mydockerhubuser/myapp:${{ github.sha }}
+        run: docker push braxter/myapp:${{ github.sha }}
       
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v0.1.10
@@ -38,10 +38,10 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull mydockerhubuser/myapp:${{ github.sha }}
+            docker pull braxter/myapp:${{ github.sha }}
             docker stop myapp || true
             docker rm myapp || true
             docker run -d --name myapp -p 3000:3000 \
               --env-file /home/ubuntu/.env \
-              mydockerhubuser/myapp:${{ github.sha }}
+              braxter/myapp:${{ github.sha }}
 
